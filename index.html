@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#edf0ed">
+    <meta name="description" content="A small WebHID control surface for the Maono PD200W microphone.">
+    <title>Maomao · PD200W Control</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css?v=3">
+    <script src="app.js?v=3" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="device-bar">
+        <div class="product-name">
+          <strong>maomao</strong>
+          <span>PD200W</span>
+        </div>
+
+        <div class="device-actions">
+          <div class="connection-copy" aria-live="polite">
+            <strong id="connection-message">Connect your microphone to begin</strong>
+            <span id="connection-detail">Chrome or Edge · HTTPS required</span>
+          </div>
+          <div class="connection-pill disconnected" id="connection-pill">
+            <span class="status-dot"></span>
+            <span id="device-name">Not connected</span>
+          </div>
+          <button class="connect-button" id="connect-button" type="button">
+            <span id="connect-label">Connect</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="browser-warning" id="browser-warning" role="alert"></div>
+
+      <section class="control-grid" aria-label="Microphone controls">
+        <article class="panel levels-panel">
+          <div class="panel-heading">
+            <div><p class="panel-kicker">LEVELS</p><h1>Audio</h1></div>
+            <span class="tiny-state" id="control-state">LOCAL</span>
+          </div>
+
+          <div class="slider-stack">
+            <div class="slider-control" data-slider="microphoneGain">
+              <div class="slider-meta">
+                <label for="microphone-gain">Microphone gain</label>
+                <output data-value>10</output>
+              </div>
+              <input id="microphone-gain" type="range" min="0" max="20" value="10" data-range="microphoneGain">
+              <div class="slider-scale"><span>0</span><span data-percent="microphoneGain">50%</span><span>20</span></div>
+            </div>
+
+            <div class="slider-control" data-slider="headphoneVolume">
+              <div class="slider-meta">
+                <label for="headphone-volume">Headphone volume</label>
+                <output data-value>10</output>
+              </div>
+              <input id="headphone-volume" type="range" min="0" max="20" value="10" data-range="headphoneVolume">
+              <div class="slider-scale"><span>0</span><span data-percent="headphoneVolume">50%</span><span>20</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel noise-panel">
+          <div class="panel-heading inline">
+            <div><p class="panel-kicker">CLEANUP</p><h2>Noise cancellation</h2></div>
+            <button class="toggle" id="noise-toggle" type="button" role="switch" aria-checked="true" aria-label="Noise cancellation"><span></span></button>
+          </div>
+          <p class="panel-description">Reduction strength</p>
+          <div class="segmented" id="noise-levels" role="group" aria-label="Noise reduction strength">
+            <button type="button" data-noise-level="0">Slight</button>
+            <button type="button" data-noise-level="1">Moderate</button>
+            <button type="button" data-noise-level="2">Aggressive</button>
+          </div>
+        </article>
+
+        <article class="panel monitor-panel">
+          <div class="panel-heading"><div><p class="panel-kicker">MONITOR</p><h2>Headphone mix</h2></div></div>
+          <p class="panel-description">Output source</p>
+          <div class="monitor-options" id="monitor-options" role="radiogroup" aria-label="Headphone monitor source">
+            <button type="button" role="radio" data-monitor="mic"><b>MIC</b><span>Your voice</span></button>
+            <button type="button" role="radio" data-monitor="computer"><b>USB</b><span>Computer</span></button>
+            <button type="button" role="radio" data-monitor="both"><b>MIX</b><span>Both</span></button>
+            <button type="button" role="radio" data-monitor="none"><b>OFF</b><span>Muted</span></button>
+          </div>
+        </article>
+
+        <article class="panel lighting-panel" id="lighting-panel">
+          <div class="panel-heading inline">
+            <div><p class="panel-kicker">LIGHTING</p><h2>RGB ring</h2></div>
+            <button class="toggle" id="rgb-toggle" type="button" role="switch" aria-checked="true" aria-label="RGB light"><span></span></button>
+          </div>
+
+          <div class="lighting-content" id="lighting-content">
+            <div class="color-row" id="color-row" role="radiogroup" aria-label="RGB color">
+              <button type="button" role="radio" data-color="0" data-name="White" aria-label="White" title="White" style="--swatch:#f5f5ed"></button>
+              <button type="button" role="radio" data-color="1" data-name="Red" aria-label="Red" title="Red" style="--swatch:#ff554f"></button>
+              <button type="button" role="radio" data-color="2" data-name="Orange" aria-label="Orange" title="Orange" style="--swatch:#ff8a45"></button>
+              <button type="button" role="radio" data-color="3" data-name="Yellow" aria-label="Yellow" title="Yellow" style="--swatch:#ffd84f"></button>
+              <button type="button" role="radio" data-color="4" data-name="Green" aria-label="Green" title="Green" style="--swatch:#59dc7d"></button>
+              <button type="button" role="radio" data-color="5" data-name="Cyan" aria-label="Cyan" title="Cyan" style="--swatch:#52d9e9"></button>
+              <button type="button" role="radio" data-color="6" data-name="Blue" aria-label="Blue" title="Blue" style="--swatch:#5b7dff"></button>
+              <button type="button" role="radio" data-color="7" data-name="Magenta" aria-label="Magenta" title="Magenta" style="--swatch:#e85ae8"></button>
+            </div>
+
+            <div class="lighting-controls">
+              <div class="effect-control">
+                <label for="effect">Effect</label>
+                <select id="effect">
+                  <option value="fixed">Fixed color</option>
+                  <option value="loop">Color loop</option>
+                  <option value="breathing">Breathing</option>
+                </select>
+              </div>
+
+              <div class="slider-control compact" data-slider="rgbBrightness">
+                <div class="slider-meta">
+                  <label for="rgb-brightness">Brightness</label>
+                  <output data-value>14</output>
+                </div>
+                <input id="rgb-brightness" type="range" min="0" max="20" value="14" data-range="rgbBrightness">
+                <div class="slider-scale"><span>0</span><span data-percent="rgbBrightness">70%</span><span>20</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div class="utility-note">
+        <span>EQ scenes unavailable until coefficient encoding is verified.</span>
+        <span><i class="status-dot" id="footer-dot"></i><span id="recent-status">No changes sent this session</span></span>
+      </div>
+
+      <noscript>This controller requires JavaScript to communicate with your microphone.</noscript>
+    </main>
+  </body>
+</html>
