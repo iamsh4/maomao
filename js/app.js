@@ -3,11 +3,11 @@
  *
  * Uses the Web Audio API to interface with the microphone and implement:
  *  - Real-time input level meter (VU / peak)
- *  - Gain control (0–20 levels mapped to 0–40 dB)
+ *  - Gain control (0–20 levels mapped to −2 to +38 dB)
  *  - Mute / unmute
  *  - Three-level noise cancellation (Off / Low / High)
  *  - Headphone monitoring with volume control
- *  - Four-band equaliser (Bass, Low-Mid, Mid, Presence, Treble)
+ *  - Five-band equaliser (Bass, Low-Mid, Mid, Presence, Treble)
  *  - EQ presets (Flat, Voice, Broadcast, Music)
  */
 
@@ -17,8 +17,11 @@
    Constants
    ========================================================= */
 
-/** Gain levels 0-20 mapped to 0-40 dB (2 dB per step). */
-const GAIN_LEVEL_TO_DB = 2;
+/** dB gain per level step (each of the 20 steps adds this many dB). */
+const GAIN_DB_PER_LEVEL = 2;
+
+/** Offset so level 0 produces −2 dBFS and level 20 produces +38 dBFS. */
+const GAIN_DB_OFFSET = -2;
 
 /** Number of bar segments in the level meter. */
 const METER_SEGMENTS = 48;
@@ -266,7 +269,7 @@ async function buildAudioGraph() {
 /** Convert a gain level (0-20) to a Web Audio linear gain value. */
 function levelToLinearGain(level) {
   if (level === 0) return 0.001; // near-silent
-  const db = level * GAIN_LEVEL_TO_DB - GAIN_LEVEL_TO_DB; // 0→-2dB, 10→18dB, 20→38dB
+  const db = level * GAIN_DB_PER_LEVEL + GAIN_DB_OFFSET;
   return Math.pow(10, db / 20);
 }
 
@@ -573,7 +576,7 @@ function setEqBand(band, value) {
   document.querySelectorAll('.eq-preset-btn').forEach(b => b.classList.remove('active'));
 
   // Update display
-  const val = $(`eq${capitalise(band)}Val`);
+  const val = $(`eq${capitalize(band)}Val`);
   if (val) val.textContent = `${value >= 0 ? '+' : ''}${value} dB`;
 
   // Update filter
@@ -657,7 +660,7 @@ function applyEqPreset(preset) {
    Utility
    ========================================================= */
 
-function capitalise(str) {
+function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
