@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maono PD200W Controls</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="18" y="2" width="12" height="26" rx="6" fill="currentColor"/>
+          <path d="M8 22c0 8.837 7.163 16 16 16s16-7.163 16-16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <line x1="24" y1="38" x2="24" y2="46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="14" y1="46" x2="34" y2="46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-text">
+          <h1>Maono PD200W</h1>
+          <span class="brand-subtitle">Microphone Controls</span>
+        </div>
+      </div>
+      <div class="connection-status" id="connectionStatus">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusLabel">Disconnected</span>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="app-main">
+
+      <!-- Connect / Disconnect panel -->
+      <section class="panel connect-panel" id="connectPanel">
+        <div class="connect-content">
+          <svg class="connect-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="22" y="2" width="20" height="36" rx="10" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M10 30c0 12.15 9.85 22 22 22s22-9.85 22-22" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <line x1="32" y1="52" x2="32" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <line x1="20" y1="62" x2="44" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <h2>Connect Your Microphone</h2>
+          <p>Grant microphone access to start controlling your Maono PD200W.</p>
+          <button class="btn btn-primary btn-lg" id="connectBtn">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M6.5 10a3.5 3.5 0 0 0 7 0H15a5 5 0 0 1-4.5 4.975V17h1.5a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1H9.5v-2.025A5 5 0 0 1 5 10h1.5z"/></svg>
+            Connect Microphone
+          </button>
+        </div>
+      </section>
+
+      <!-- Controls panel (shown after connect) -->
+      <section class="controls-grid" id="controlsGrid" hidden>
+
+        <!-- Level meter -->
+        <div class="panel level-panel">
+          <h2 class="panel-title">Input Level</h2>
+          <div class="level-meter" aria-label="Input level meter">
+            <div class="meter-bars" id="meterBars"></div>
+            <div class="meter-labels">
+              <span>-60</span><span>-40</span><span>-20</span><span>-12</span><span>-6</span><span>0 dBFS</span>
+            </div>
+          </div>
+          <div class="level-value" id="levelValue">— dBFS</div>
+          <div class="peak-value">Peak: <span id="peakValue">—</span> dBFS</div>
+        </div>
+
+        <!-- Gain control -->
+        <div class="panel gain-panel">
+          <h2 class="panel-title">Gain</h2>
+          <div class="knob-container">
+            <div class="knob-display">
+              <canvas class="knob-canvas" id="gainKnob" width="120" height="120"
+                      aria-label="Gain knob" role="slider"
+                      aria-valuemin="0" aria-valuemax="20" aria-valuenow="10"
+                      tabindex="0"></canvas>
+              <div class="knob-value" id="gainValue">10</div>
+              <div class="knob-label">Level (0–20)</div>
+            </div>
+          </div>
+          <div class="gain-buttons">
+            <button class="btn btn-icon" id="gainDown" aria-label="Decrease gain">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <input type="range" class="slider" id="gainSlider"
+                   min="0" max="20" step="1" value="10"
+                   aria-label="Gain slider" />
+            <button class="btn btn-icon" id="gainUp" aria-label="Increase gain">
+              <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mute control -->
+        <div class="panel mute-panel">
+          <h2 class="panel-title">Mute</h2>
+          <button class="mute-btn" id="muteBtn" aria-pressed="false" aria-label="Mute microphone">
+            <svg class="mic-icon" id="muteIcon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="16" y="2" width="16" height="28" rx="8" fill="currentColor"/>
+              <path d="M8 22c0 8.837 7.163 16 16 16s16-7.163 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <line x1="24" y1="38" x2="24" y2="46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              <line x1="14" y1="46" x2="34" y2="46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <span id="muteLabel">Unmuted</span>
+          </button>
+        </div>
+
+        <!-- Noise cancellation -->
+        <div class="panel noise-panel">
+          <h2 class="panel-title">Noise Cancellation</h2>
+          <div class="nc-buttons" role="group" aria-label="Noise cancellation level">
+            <button class="nc-btn active" data-level="off" id="ncOff">Off</button>
+            <button class="nc-btn" data-level="low" id="ncLow">Low</button>
+            <button class="nc-btn" data-level="high" id="ncHigh">High</button>
+          </div>
+          <div class="nc-description" id="ncDescription">No noise reduction applied.</div>
+        </div>
+
+        <!-- Monitoring volume -->
+        <div class="panel monitor-panel">
+          <h2 class="panel-title">
+            <svg viewBox="0 0 20 20" fill="currentColor" class="panel-icon" aria-hidden="true">
+              <path d="M3 10a7 7 0 1 1 14 0A7 7 0 0 1 3 10zm7-5a1 1 0 0 0-1 1v4a1 1 0 0 0 .553.894l3 1.5a1 1 0 0 0 .894-1.788L12 9.882V6a1 1 0 0 0-1-1z"/>
+            </svg>
+            Headphone Monitor
+          </h2>
+          <div class="monitor-controls">
+            <button class="btn btn-icon" id="monitorToggle" aria-pressed="false" aria-label="Toggle headphone monitoring">
+              <svg id="monitorIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
+                <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </button>
+            <div class="monitor-volume-wrap">
+              <input type="range" class="slider" id="monitorSlider"
+                     min="0" max="100" step="1" value="70"
+                     aria-label="Monitoring volume" />
+              <span class="monitor-vol-value" id="monitorValue">70%</span>
+            </div>
+          </div>
+          <div class="monitor-status" id="monitorStatus">Monitoring Off</div>
+        </div>
+
+        <!-- Equalizer -->
+        <div class="panel eq-panel">
+          <h2 class="panel-title">Equalizer</h2>
+          <div class="eq-presets" role="group" aria-label="EQ preset">
+            <button class="eq-preset-btn active" data-preset="flat" id="presetFlat">Flat</button>
+            <button class="eq-preset-btn" data-preset="voice" id="presetVoice">Voice</button>
+            <button class="eq-preset-btn" data-preset="broadcast" id="presetBroadcast">Broadcast</button>
+            <button class="eq-preset-btn" data-preset="music" id="presetMusic">Music</button>
+          </div>
+          <div class="eq-bands">
+            <div class="eq-band">
+              <label for="eqBass">Bass<br/><small>80 Hz</small></label>
+              <input type="range" class="slider eq-slider" id="eqBass"
+                     min="-12" max="12" step="1" value="0"
+                     aria-label="Bass EQ" orient="vertical" />
+              <span class="eq-band-value" id="eqBassVal">0 dB</span>
+            </div>
+            <div class="eq-band">
+              <label for="eqLowMid">Low Mid<br/><small>500 Hz</small></label>
+              <input type="range" class="slider eq-slider" id="eqLowMid"
+                     min="-12" max="12" step="1" value="0"
+                     aria-label="Low-mid EQ" orient="vertical" />
+              <span class="eq-band-value" id="eqLowMidVal">0 dB</span>
+            </div>
+            <div class="eq-band">
+              <label for="eqMid">Mid<br/><small>2 kHz</small></label>
+              <input type="range" class="slider eq-slider" id="eqMid"
+                     min="-12" max="12" step="1" value="0"
+                     aria-label="Mid EQ" orient="vertical" />
+              <span class="eq-band-value" id="eqMidVal">0 dB</span>
+            </div>
+            <div class="eq-band">
+              <label for="eqPresence">Presence<br/><small>5 kHz</small></label>
+              <input type="range" class="slider eq-slider" id="eqPresence"
+                     min="-12" max="12" step="1" value="0"
+                     aria-label="Presence EQ" orient="vertical" />
+              <span class="eq-band-value" id="eqPresenceVal">0 dB</span>
+            </div>
+            <div class="eq-band">
+              <label for="eqTreble">Treble<br/><small>12 kHz</small></label>
+              <input type="range" class="slider eq-slider" id="eqTreble"
+                     min="-12" max="12" step="1" value="0"
+                     aria-label="Treble EQ" orient="vertical" />
+              <span class="eq-band-value" id="eqTrebleVal">0 dB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disconnect button -->
+        <div class="panel disconnect-panel">
+          <button class="btn btn-danger" id="disconnectBtn">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/></svg>
+            Disconnect
+          </button>
+        </div>
+
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Maono PD200W Web Controls &mdash; Uses the Web Audio API &middot; Zero-latency monitoring</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
